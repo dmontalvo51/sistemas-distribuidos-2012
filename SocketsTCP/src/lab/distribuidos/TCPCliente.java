@@ -9,36 +9,38 @@ import java.net.UnknownHostException;
 
 public class TCPCliente {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
-		String frase;
-		String fraseModificada;
-		
-		System.out.print("Ingrese mensaje > ");
-		BufferedReader entradaDeUsuario = new BufferedReader(
-				new InputStreamReader(System.in));
-		
-		Socket socketCliente=null;
+		String frase = new String();
+		String fraseModificada = new String();
+
 		try {
-			socketCliente=new Socket("localhost",6789);
+			
+			System.out.print("Ingrese mensaje > ");
+
+			BufferedReader entradaDesdeUsuario = new BufferedReader(
+					new InputStreamReader(System.in));
+
+			Socket socketCliente = new Socket("localhost", 6789);
+			
+			DataOutputStream salidaAServidor = new DataOutputStream(
+					socketCliente.getOutputStream());
+
+			BufferedReader entradaDesdeServidor = new BufferedReader(
+					new InputStreamReader(socketCliente.getInputStream()));
+
+			frase = entradaDesdeUsuario.readLine();
+			salidaAServidor.writeBytes(frase + '\n');
+			fraseModificada = entradaDesdeServidor.readLine();
+			System.out.println("DEL SERVIDOR: " + fraseModificada);
+			socketCliente.close();
+
 		} catch (UnknownHostException e) {
 			System.out.println("No se encontro el host");
 			e.printStackTrace();
-			
 		} catch (IOException e) {
 			System.out.println("Error de entrada y salida");
 			e.printStackTrace();
 		}
-		
-		DataOutputStream salidaAServidor=null;
-		try {
-			salidaAServidor = new DataOutputStream(socketCliente.getOutputStream());
-		} catch (IOException e) {
-			System.out.println("Error dal generar flujo de salida");
-			e.printStackTrace();
-		}
-		
-
 	}
-
 }
