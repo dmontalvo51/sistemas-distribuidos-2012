@@ -13,6 +13,18 @@ public class Conexion {
 	SSLSocketFactory socketFactory;
 	SSLSocket socketSSL;
 	String respuestaServidor;
+	
+	public Conexion(){
+		try {
+			conectar();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
 
 	public void conectar() throws UnknownHostException, IOException {
 
@@ -43,11 +55,11 @@ public class Conexion {
 		
 		enviarComando("USER " + cuenta);
 		respuestaServidor=entradaDesdeServidor.readLine();
-		System.out.println(respuestaServidor);
+		escribirConsola(respuestaServidor);
 		
-		enviarComando("USER " + cuenta);
+		enviarComando("PASS " + password);
 		respuestaServidor=entradaDesdeServidor.readLine();
-		System.out.println(respuestaServidor);
+		escribirConsola(respuestaServidor);
 		
 	}
 
@@ -58,7 +70,7 @@ public class Conexion {
 	
 	public void nose(){
 				try {
-			SSLSocket c = (SSLSocket) f.createSocket("localhost", 8888);
+			SSLSocket c = (SSLSocket) socketFactory.createSocket("localhost", 8888);
 
 			c.startHandshake();
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(
@@ -81,50 +93,49 @@ public class Conexion {
 		}
 	}
 	
-public void cerrarConexion(boolean objetodebug){
+public void cerrarConexion(){
 
     if(this.estaConectado())
     {
         try
          {
-            enviarComando(salidaAServidor, "QUIT");
-            if(objetodebug) Debug.Debug(debugger, "QUIT");
-            String Respuesta = leerLineaRespuesta(colaEntrada);
-            if(objetodebug) Debug.Debug(debugger, Respuesta);
-
-            if(Respuesta.startsWith("+OK"))
+            enviarComando("QUIT");
+            respuestaServidor = entradaDesdeServidor.readLine();
+            escribirConsola(respuestaServidor);
+            
+            if(respuestaServidor.startsWith("+OK"))
             {
-                miSocket.close();
+                socketSSL.close();
             }
         }
         catch(IOException ex)
         {
-            this.cerrarConexion(objetodebug);
+            ex.printStackTrace();
         }
     }
     else
     {
-        if(objetodebug) Debug.Debug(debugger, "-->Cliente dice: La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
+       System.out.println("-->Cliente dice: La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
     }
 }    
 
 	
 
 	public void printSocketInfo(SSLSocket s) {
-		System.out.println("Socket class: " + s.getClass());
-		System.out.println("   Remote address = "
+		escribirConsola("Socket class: " + s.getClass());
+		escribirConsola("   Remote address = "
 				+ s.getInetAddress().toString());
-		System.out.println("   Remote port = " + s.getPort());
-		System.out.println("   Local socket address = "
+		escribirConsola("   Remote port = " + s.getPort());
+		escribirConsola("   Local socket address = "
 				+ s.getLocalSocketAddress().toString());
-		System.out.println("   Local address = "
+		escribirConsola("   Local address = "
 				+ s.getLocalAddress().toString());
-		System.out.println("   Local port = " + s.getLocalPort());
-		System.out.println("   Need client authentication = "
+		escribirConsola("   Local port = " + s.getLocalPort());
+		escribirConsola("   Need client authentication = "
 				+ s.getNeedClientAuth());
 		SSLSession ss = s.getSession();
-		System.out.println("   Cipher suite = " + ss.getCipherSuite());
-		System.out.println("   Protocol = " + ss.getProtocol());
+		escribirConsola("   Cipher suite = " + ss.getCipherSuite());
+		escribirConsola("   Protocol = " + ss.getProtocol());
 	}
 	
 	public boolean estaConectado(){
@@ -137,4 +148,8 @@ public void cerrarConexion(boolean objetodebug){
         }
         else return false;
     }
+	
+	public void escribirConsola(String mensaje){
+		System.out.println(mensaje);
+	}
 }
