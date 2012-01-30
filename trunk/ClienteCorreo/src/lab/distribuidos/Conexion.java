@@ -9,147 +9,154 @@ public class Conexion {
 
 	DataOutputStream salidaAServidor;
 	BufferedReader entradaDesdeServidor;
-
-	SSLSocketFactory socketFactory;
-	SSLSocket socketSSL;
+	Socket socket;
 	String respuestaServidor;
-	
-	public Conexion(){
+
+	public Conexion(String host,int puerto) {
+		conectar(host,puerto);
+	}
+
+	public void conectar(String host,int puerto) {
 		try {
-			conectar();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-	}
 
-	public void conectar() throws UnknownHostException, IOException {
+			socket = new Socket(host,puerto);
+			printSocketInfo(socket);
+			salidaAServidor = new DataOutputStream(socket.getOutputStream());
+			entradaDesdeServidor = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
 
-		socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-		socketSSL = (SSLSocket) socketFactory
-				.createSocket("pop.gmail.com", 995);
-		printSocketInfo(socketSSL);
-		socketSSL.startHandshake();
+			while ((respuestaServidor = leerRespuesta()) != null)
+				System.out.println(respuestaServidor);
 
-		salidaAServidor = new DataOutputStream(socketSSL.getOutputStream());
-		entradaDesdeServidor = new BufferedReader(new InputStreamReader(
-				socketSSL.getInputStream()));
-
-		while ((respuestaServidor = entradaDesdeServidor.readLine()) != null) {
-			System.out.println(respuestaServidor);
-			/*
-			respuestaServidor = entradaDesdeServidor.readLine();
-			salidaAServidor.write(respuestaServidor, 0,respuestaServidor.length());
-			salidaAServidor.newLine();
-			salidaAServidor.flush();
-			*/
+		} catch (UnknownHostException e1) {
+			escribirConsola("Error al traducir el dominio del servidor de correos");
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			escribirConsola("Error al conectar con el servidor de correo");
+			e1.printStackTrace();
 		}
-
 	}
-	
-	public void iniciarSesion(String cuenta,String password) throws IOException{
-		
-		
+
+	public void iniciarSesion(String cuenta, String password) {
+
+		String respuesta;
+
 		enviarComando("USER " + cuenta);
-		respuestaServidor=entradaDesdeServidor.readLine();
-		escribirConsola(respuestaServidor);
-		
+		respuesta = leerRespuesta();
+		escribirConsola(respuesta);
+
 		enviarComando("PASS " + password);
-		respuestaServidor=entradaDesdeServidor.readLine();
-		escribirConsola(respuestaServidor);
+		respuesta = leerRespuesta();
+		escribirConsola(respuesta);
+
+	}
+
+	public void enviarComando(String mensaje) {
+
+		escribirConsola("C: "+mensaje);
 		
-	}
-
-	public void enviarComando(String mensaje) throws IOException {
-		salidaAServidor.writeBytes(mensaje+"\r\n");
-	}
-	
-	
-	public void nose(){
-				try {
-			SSLSocket c = (SSLSocket) socketFactory.createSocket("localhost", 8888);
-
-			c.startHandshake();
-			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(
-					c.getOutputStream()));
-			BufferedReader r = new BufferedReader(new InputStreamReader(
-					c.getInputStream()));
-			String m = null;
-			while ((m = r.readLine()) != null) {
-				System.out.println(m);
-				m = entradaDesdeServidor.readLine();
-				w.write(m, 0, m.length());
-				w.newLine();
-				w.flush();
-			}
-			w.close();
-			r.close();
-			c.close();
+		try {
+			salidaAServidor.writeBytes(mensaje + "\r\n");
 		} catch (IOException e) {
-			System.err.println(e.toString());
+			System.out
+					.println("Error al escribir mensaje en el buffer de salida");
+			e.printStackTrace();
 		}
 	}
-	
-public void cerrarConexion(){
 
-    if(this.estaConectado())
-    {
-        try
-         {
-            enviarComando("QUIT");
-            respuestaServidor = entradaDesdeServidor.readLine();
-            escribirConsola(respuestaServidor);
-            
-            if(respuestaServidor.startsWith("+OK"))
-            {
-                socketSSL.close();
-            }
-        }
-        catch(IOException ex)
-        {
-            ex.printStackTrace();
-        }
-    }
-    else
-    {
-       System.out.println("-->Cliente dice: La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
-    }
-}    
+	public void cerrarConexion() {
 
-	
+		String respuesta;
 
-	public void printSocketInfo(SSLSocket s) {
+		if (this.estaConectado()) {
+			enviarComando("QUIT");
+			respuesta = leerRespuesta();
+			escribirConsola(respuestaServidor);
+
+			if (respuestaServidor.startsWith("+OK")) {
+				try {
+					socket.close();
+				} catch (IOException e) {
+					escribirConsola("Error al cerrar la conexion");
+					e.printStackTrace();
+				}
+			}
+			
+		} else {
+			System.out
+					.println("C: La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
+		}
+	}
+
+	public void printSocketInfo(Socket s) {
 		escribirConsola("Socket class: " + s.getClass());
-		escribirConsola("   Remote address = "
-				+ s.getInetAddress().toString());
+		escribirConsola("   Remote address = " + s.getInetAddress().toString());
 		escribirConsola("   Remote port = " + s.getPort());
 		escribirConsola("   Local socket address = "
 				+ s.getLocalSocketAddress().toString());
-		escribirConsola("   Local address = "
-				+ s.getLocalAddress().toString());
+		escribirConsola("   Local address = " + s.getLocalAddress().toString());
 		escribirConsola("   Local port = " + s.getLocalPort());
-		escribirConsola("   Need client authentication = "
-				+ s.getNeedClientAuth());
-		SSLSession ss = s.getSession();
-		escribirConsola("   Cipher suite = " + ss.getCipherSuite());
-		escribirConsola("   Protocol = " + ss.getProtocol());
 	}
-	
-	public boolean estaConectado(){
 
-        if(!socketSSL.isClosed())
-        {
-            if(socketSSL.isConnected())
-                return true;
-            else return false;
-        }
-        else return false;
-    }
-	
-	public void escribirConsola(String mensaje){
+	public String leerRespuesta() {
+		String respuesta = new String();
+
+		try {
+			respuesta = entradaDesdeServidor.readLine();
+			return respuesta;
+		} catch (IOException e) {
+			escribirConsola("Error al leer linea desde el buffer de entrada");
+			e.printStackTrace();
+			return null;
+			
+		}
+	}
+
+	public boolean estaConectado() {
+
+		if (!socket.isClosed()) {
+			if (socket.isConnected())
+				return true;
+			else
+				return false;
+		} else
+			return false;
+	}
+
+	public void escribirConsola(String mensaje) {
 		System.out.println(mensaje);
 	}
+
+	public DataOutputStream getSalidaAServidor() {
+		return salidaAServidor;
+	}
+
+	public void setSalidaAServidor(DataOutputStream salidaAServidor) {
+		this.salidaAServidor = salidaAServidor;
+	}
+
+	public BufferedReader getEntradaDesdeServidor() {
+		return entradaDesdeServidor;
+	}
+
+	public void setEntradaDesdeServidor(BufferedReader entradaDesdeServidor) {
+		this.entradaDesdeServidor = entradaDesdeServidor;
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+
+	public String getRespuestaServidor() {
+		return respuestaServidor;
+	}
+
+	public void setRespuestaServidor(String respuestaServidor) {
+		this.respuestaServidor = respuestaServidor;
+	}
+
 }
