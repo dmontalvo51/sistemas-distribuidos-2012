@@ -12,19 +12,18 @@ public class Conexion {
 	Socket socket;
 	String respuestaServidor;
 
-	public Conexion(String host,int puerto) {
-		conectar(host,puerto);
+	public Conexion(String host, int puerto) {
+		conectar(host, puerto);
 	}
 
-	public void conectar(String host,int puerto) {
+	public void conectar(String host, int puerto) {
+		escribirConsola("Conectando ....");
 		try {
-
-			socket = new Socket(host,puerto);
+			socket = new Socket(host, puerto);
 			printSocketInfo(socket);
-			salidaAServidor = new DataOutputStream(socket.getOutputStream());
 			entradaDesdeServidor = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
-
+			salidaAServidor = new DataOutputStream(socket.getOutputStream());
 			while ((respuestaServidor = leerRespuesta()) != null)
 				System.out.println(respuestaServidor);
 
@@ -35,17 +34,25 @@ public class Conexion {
 			escribirConsola("Error al conectar con el servidor de correo");
 			e1.printStackTrace();
 		}
+
 	}
 
 	public void iniciarSesion(String cuenta, String password) {
-
+		escribirConsola("Iniciando sesion ....");
 		String respuesta;
 
-		enviarComando("USER " + cuenta);
-		respuesta = leerRespuesta();
+		enviarComando("user " + cuenta);
+		try {
+			respuesta=entradaDesdeServidor.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			respuesta=null;
+			e.printStackTrace();
+		}
+//		respuesta = leerRespuesta();
 		escribirConsola(respuesta);
 
-		enviarComando("PASS " + password);
+		enviarComando("pass " + password);
 		respuesta = leerRespuesta();
 		escribirConsola(respuesta);
 
@@ -53,10 +60,10 @@ public class Conexion {
 
 	public void enviarComando(String mensaje) {
 
-		escribirConsola("C: "+mensaje);
-		
+		escribirConsola("C: " + mensaje);
+
 		try {
-			salidaAServidor.writeBytes(mensaje + "\r\n");
+			salidaAServidor.writeBytes(mensaje);
 		} catch (IOException e) {
 			System.out
 					.println("Error al escribir mensaje en el buffer de salida");
@@ -81,7 +88,7 @@ public class Conexion {
 					e.printStackTrace();
 				}
 			}
-			
+
 		} else {
 			System.out
 					.println("C: La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
@@ -108,7 +115,7 @@ public class Conexion {
 			escribirConsola("Error al leer linea desde el buffer de entrada");
 			e.printStackTrace();
 			return null;
-			
+
 		}
 	}
 

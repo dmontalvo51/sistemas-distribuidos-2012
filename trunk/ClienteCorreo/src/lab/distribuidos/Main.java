@@ -6,7 +6,7 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Conexion conexion=new Conexion("127.0.0.1",110);
+		Conexion conexion=new Conexion("localhost",110);
 		
 		conexion.iniciarSesion("dmontalvo@neoalfanet.com","c0ntr4s3n4");
 
