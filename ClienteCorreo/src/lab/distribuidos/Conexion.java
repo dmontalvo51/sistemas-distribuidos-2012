@@ -2,6 +2,10 @@ package lab.distribuidos;
 
 import java.io.*;
 import java.net.*;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.*;
 
@@ -9,9 +13,10 @@ public class Conexion {
 
 	DataOutputStream salidaAServidor;
 	BufferedReader entradaDesdeServidor;
-	Socket socket;
+	//Socket socket;
 	String respuestaServidor;
-
+	SSLSocket socket;
+	
 	public Conexion(String host, int puerto) {
 		conectar(host, puerto);
 	}
@@ -19,6 +24,27 @@ public class Conexion {
 	public void conectar(String host, int puerto) {
 		escribirConsola("Conectando ....");
 		try {
+			
+			 KeyStore ks = KeyStore.getInstance("JKS");
+	         KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+	        // kmf.init(null,);
+	         SSLContext sc = SSLContext.getInstance("SSL");
+	         sc.init(kmf.getKeyManagers(), null, null);
+	         
+	         SSLSocketFactory socketFactoru= sc.getSocketFactory();
+	         socket=(SSLSocket) socketFactoru.createSocket(host,puerto);
+	         printSocketInfo(socket);
+	         socket.startHandshake();
+			
+	         
+	         printSocketInfo(socket);
+				entradaDesdeServidor = new BufferedReader(new InputStreamReader(
+						socket.getInputStream()));
+				salidaAServidor = new DataOutputStream(socket.getOutputStream());
+				while ((respuestaServidor = leerRespuesta()) != null)
+					System.out.println(respuestaServidor);
+			
+			/*
 			socket = new Socket(host, puerto);
 			printSocketInfo(socket);
 			entradaDesdeServidor = new BufferedReader(new InputStreamReader(
@@ -26,13 +52,24 @@ public class Conexion {
 			salidaAServidor = new DataOutputStream(socket.getOutputStream());
 			while ((respuestaServidor = leerRespuesta()) != null)
 				System.out.println(respuestaServidor);
-
+			 */
+	         
+	         
 		} catch (UnknownHostException e1) {
 			escribirConsola("Error al traducir el dominio del servidor de correos");
 			e1.printStackTrace();
 		} catch (IOException e1) {
 			escribirConsola("Error al conectar con el servidor de correo");
 			e1.printStackTrace();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
@@ -109,7 +146,7 @@ public class Conexion {
 		String respuesta = new String();
 
 		try {
-			respuesta = entradaDesdeServidor.readLine();
+			respuesta = getEntradaDesdeServidor().readLine();
 			return respuesta;
 		} catch (IOException e) {
 			escribirConsola("Error al leer linea desde el buffer de entrada");
@@ -150,13 +187,6 @@ public class Conexion {
 		this.entradaDesdeServidor = entradaDesdeServidor;
 	}
 
-	public Socket getSocket() {
-		return socket;
-	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
-	}
 
 	public String getRespuestaServidor() {
 		return respuestaServidor;

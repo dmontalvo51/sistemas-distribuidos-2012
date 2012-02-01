@@ -6,10 +6,11 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Conexion conexion=new Conexion("localhost",110);
+		// TODO Auto-generated method stub
+		Conexion conexion=new Conexion("pop.gmail.com",995);
+		//conexion.iniciarSesion("dmontalvo@neoalfanet.com","upaupaupapa");
+		//conexion.cerrarConexion();
 		
-		conexion.iniciarSesion("dmontalvo@neoalfanet.com","c0ntr4s3n4");
-
 	}
 
 }
