@@ -3,6 +3,7 @@ package lab.distribuidos;
 import java.io.*;
 import java.net.*;
 import javax.net.ssl.*;
+import javax.swing.JTextArea;
 
 public class Conexion {
 
@@ -10,8 +11,7 @@ public class Conexion {
     private BufferedReader entradaDesdeServidor;
     private Socket socket;
     private int modo = 1;
-    
-    
+    private JTextArea consola;
     
     public static int CARGAR_ELIMINAR = 0;
     public static int CARGAR_GUARDAR = 1;
@@ -31,7 +31,7 @@ public class Conexion {
             e1.printStackTrace();
         }
     }
-
+    
     public void cambiarModo(int modo) {
         setModo(modo);
     }
@@ -160,7 +160,14 @@ public class Conexion {
     }
 
     private void escribirConsola(String mensaje) {
-        System.out.println(mensaje);
+        if(consola!=null)
+            consola.append(mensaje);
+        else
+            System.out.println(mensaje);
+    }
+    
+    public void limpiarConsola(){
+        consola.setText("");
     }
 
     public BufferedReader getEntradaDesdeServidor() {
@@ -205,5 +212,19 @@ public class Conexion {
      */
     public void setModo(int modo) {
         this.modo = modo;
+    }
+
+    /**
+     * @return the consola
+     */
+    public JTextArea getConsola() {
+        return consola;
+    }
+
+    /**
+     * @param consola the consola to set
+     */
+    public void setConsola(JTextArea consola) {
+        this.consola = consola;
     }
 }

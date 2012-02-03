@@ -161,6 +161,9 @@ public class IniciarSesion extends javax.swing.JFrame {
                    inicio = true;
                    Principal p = new Principal(conexion);
                    this.dispose();
+                   p.show();
+                   p.setLocationRelativeTo(null);
+                   
             }else{
                 System.out.println("Eror : No se ha podido establecer conexión con: "+ servidor);
             }

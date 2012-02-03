@@ -17,7 +17,7 @@
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radioModoCG">
               <Properties>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="jRadioButtonMenuItem2"/>
+                <Property name="text" type="java.lang.String" value="Cargar y Borrar"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="radioModoCGActionPerformed"/>
@@ -25,8 +25,23 @@
             </MenuItem>
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="radioModoCB">
               <Properties>
-                <Property name="text" type="java.lang.String" value="jRadioButtonMenuItem1"/>
+                <Property name="text" type="java.lang.String" value="Cargar y Guardar"/>
               </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Consola"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Limpiar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
