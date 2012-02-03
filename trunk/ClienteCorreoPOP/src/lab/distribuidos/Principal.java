@@ -7,6 +7,8 @@ package lab.distribuidos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -23,9 +25,9 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal(Conexion conexion) {
         initComponents();
-        
         this.conexion = conexion;
-
+        conexion.setConsola(this.txtAreaConsola);
+        
         conexion.enviarComando("STAT");
         conexion.listarMensajes();
 
@@ -62,6 +64,8 @@ public class Principal extends javax.swing.JFrame {
         menuModo = new javax.swing.JMenu();
         radioModoCG = new javax.swing.JRadioButtonMenuItem();
         radioModoCB = new javax.swing.JRadioButtonMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -78,7 +82,7 @@ public class Principal extends javax.swing.JFrame {
         menuModo.setText("Modo");
 
         radioModoCG.setSelected(true);
-        radioModoCG.setText("jRadioButtonMenuItem2");
+        radioModoCG.setText("Cargar y Borrar");
         radioModoCG.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioModoCGActionPerformed(evt);
@@ -86,10 +90,22 @@ public class Principal extends javax.swing.JFrame {
         });
         menuModo.add(radioModoCG);
 
-        radioModoCB.setText("jRadioButtonMenuItem1");
+        radioModoCB.setText("Cargar y Guardar");
         menuModo.add(radioModoCB);
 
         menuBar.add(menuModo);
+
+        jMenu1.setText("Consola");
+
+        jMenuItem1.setText("Limpiar");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        menuBar.add(jMenu1);
 
         setJMenuBar(menuBar);
 
@@ -123,10 +139,16 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_radioModoCGActionPerformed
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+            conexion.limpiarConsola();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JLabel lblConsola;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuCorreo;
