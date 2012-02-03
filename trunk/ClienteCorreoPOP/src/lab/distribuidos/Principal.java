@@ -55,6 +55,7 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         panelConsola = new javax.swing.JScrollPane();
+        txtAreaConsola = new javax.swing.JTextArea();
         lblConsola = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
         menuCorreo = new javax.swing.JMenu();
@@ -63,6 +64,10 @@ public class Principal extends javax.swing.JFrame {
         radioModoCB = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        txtAreaConsola.setColumns(20);
+        txtAreaConsola.setRows(5);
+        panelConsola.setViewportView(txtAreaConsola);
 
         lblConsola.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblConsola.setText("Consola");
@@ -129,5 +134,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane panelConsola;
     private javax.swing.JRadioButtonMenuItem radioModoCB;
     private javax.swing.JRadioButtonMenuItem radioModoCG;
+    private javax.swing.JTextArea txtAreaConsola;
     // End of variables declaration//GEN-END:variables
 }
