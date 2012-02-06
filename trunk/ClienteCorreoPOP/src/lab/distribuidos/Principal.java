@@ -24,25 +24,17 @@ public class Principal extends javax.swing.JFrame {
      * Creates new form Principal
      */
     public Principal(Conexion conexion) {
+        
         initComponents();
         this.conexion = conexion;
+        
         conexion.setConsola(this.txtAreaConsola);
         
         conexion.enviarComando("STAT");
         conexion.listarMensajes();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("Ingrese ID del mensaje");
-
-        try {
-            while (!(idMensaje = br.readLine()).equals("exit")) {
-                conexion.mostrarCorreo(idMensaje);
-            }
-            conexion.cerrarConexion();
-        } catch (IOException ex) {
-            System.out.println("Error al leer deste teclado el ID del mensaje");
-            ex.printStackTrace();
-        }
+      
     }
 
  
@@ -63,7 +55,7 @@ public class Principal extends javax.swing.JFrame {
         menuCorreo = new javax.swing.JMenu();
         menuModo = new javax.swing.JMenu();
         radioModoCG = new javax.swing.JRadioButtonMenuItem();
-        radioModoCB = new javax.swing.JRadioButtonMenuItem();
+        radioModoCE = new javax.swing.JRadioButtonMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
 
@@ -73,7 +65,7 @@ public class Principal extends javax.swing.JFrame {
         txtAreaConsola.setRows(5);
         panelConsola.setViewportView(txtAreaConsola);
 
-        lblConsola.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblConsola.setFont(new java.awt.Font("Tahoma", 0, 14));
         lblConsola.setText("Consola");
 
         menuCorreo.setText("Correo");
@@ -82,7 +74,7 @@ public class Principal extends javax.swing.JFrame {
         menuModo.setText("Modo");
 
         radioModoCG.setSelected(true);
-        radioModoCG.setText("Cargar y Borrar");
+        radioModoCG.setText("Cargar y Eliminar");
         radioModoCG.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 radioModoCGActionPerformed(evt);
@@ -90,8 +82,12 @@ public class Principal extends javax.swing.JFrame {
         });
         menuModo.add(radioModoCG);
 
-        radioModoCB.setText("Cargar y Guardar");
-        menuModo.add(radioModoCB);
+        radioModoCE.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioModoCEActionPerformed(evt);
+            }
+        });
+        menuModo.add(radioModoCE);
 
         menuBar.add(menuModo);
 
@@ -116,7 +112,7 @@ public class Principal extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelConsola)
+                    .addComponent(panelConsola, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblConsola)
                         .addGap(0, 507, Short.MAX_VALUE)))
@@ -143,6 +139,11 @@ public class Principal extends javax.swing.JFrame {
             conexion.limpiarConsola();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void radioModoCEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioModoCEActionPerformed
+            radioModoCG.setSelected(false);
+            conexion.cambiarModo(conexion.CARGAR_ELIMINAR);
+    }//GEN-LAST:event_radioModoCEActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -154,7 +155,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu menuCorreo;
     private javax.swing.JMenu menuModo;
     private javax.swing.JScrollPane panelConsola;
-    private javax.swing.JRadioButtonMenuItem radioModoCB;
+    private javax.swing.JRadioButtonMenuItem radioModoCE;
     private javax.swing.JRadioButtonMenuItem radioModoCG;
     private javax.swing.JTextArea txtAreaConsola;
     // End of variables declaration//GEN-END:variables
