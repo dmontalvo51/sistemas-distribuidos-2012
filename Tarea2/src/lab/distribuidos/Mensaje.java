@@ -16,6 +16,15 @@ public class Mensaje {
     private String asunto;
     private String cuerpo;
 
+    
+    public Mensaje(String emisor, String receptor, String asunto, String cuerpo){
+        this.emisor=emisor;
+        this.receptor=receptor;
+        this.asunto=asunto;
+        this.cuerpo=cuerpo;
+    }
+    
+        
     /**
      * @return the emisor
      */

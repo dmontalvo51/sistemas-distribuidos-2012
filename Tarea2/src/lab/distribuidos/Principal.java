@@ -16,14 +16,19 @@ package lab.distribuidos;
  * @author Diego
  */
 public class Principal extends javax.swing.JFrame {
+    
+    private Cliente cliente;
 
     /** Creates new form Principal */
     public Principal() {
         initComponents();
         Conexion conexion=new Conexion("localhost",25);
-        Cliente cliente=new Cliente(txtConsola,conexion);
+        
+        cliente=new Cliente(txtConsola,conexion);
         cliente.abrirConexion();
-    }
+        cliente.saludo();
+                
+     }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -59,26 +64,26 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("De :");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText("Para :");
 
-        txtReceptor.setFont(new java.awt.Font("Tahoma", 0, 18));
+        txtReceptor.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtReceptor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtReceptorActionPerformed(evt);
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18));
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Asunto :");
 
-        txtAsunto.setFont(new java.awt.Font("Tahoma", 0, 18));
+        txtAsunto.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtAsunto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtAsuntoActionPerformed(evt);
@@ -162,14 +167,14 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEnviar)
                     .addComponent(jButton1)
                     .addComponent(jButton3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -189,7 +194,8 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtAsuntoActionPerformed
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-        // TODO add your handling code here:
+          Mensaje mensaje=new Mensaje(txtEmisor.getText(),txtReceptor.getText(),txtAsunto.getText(),panelMensaje.getText());
+          cliente.enviarMensaje(mensaje);
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

@@ -9,6 +9,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
 import javax.swing.JTextArea;
 
 public class Cliente {
@@ -31,6 +33,7 @@ public class Cliente {
     public boolean abrirConexion() {
         try {
             miSocket = new Socket(this.conexion.servidor, this.conexion.puerto);  //abre su socket
+            printSocketInfo(miSocket);
             colaEntrada = new BufferedReader(new InputStreamReader(miSocket.getInputStream()));
             colaSalida = new DataOutputStream(miSocket.getOutputStream());
             String resp = leerLineaRespuesta(colaEntrada);
@@ -51,6 +54,17 @@ public class Cliente {
         }
     }
 
+    public void saludo() {
+        try {
+            enviarComando(colaSalida, "HELO localhost");
+            String resp = leerLineaRespuesta(colaEntrada);
+            escribirConsola("S: " + resp);
+        } catch (Exception e) {
+            escribirConsola("Error al enviar comando de saludo");
+            e.printStackTrace();
+        }
+    }
+
     private void escribirConsola(String mensaje) {
         if (consola != null) {
             consola.append(mensaje + "\n");
@@ -58,7 +72,6 @@ public class Cliente {
             System.out.println(mensaje);
         }
     }
-
 
     public void cerrarConexion() {
 
@@ -70,15 +83,15 @@ public class Cliente {
                     miSocket.close();
                 }
             } catch (IOException ex) {
-
+                escribirConsola("Error al cerrar conexión");
             }
         } else {
-           escribirConsola("La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
+            escribirConsola("La conexión está cerrada, todo cambio ha sido actualizado en el servidor");
         }
     }
 
     public void enviarComando(DataOutputStream salida, String comando) throws IOException {
-        escribirConsola(comando);
+        escribirConsola("C: " + comando);
         salida.writeBytes(comando + "\r\n");
     }
 
@@ -88,8 +101,17 @@ public class Cliente {
     }
 
     public BufferedReader obtenerBufferRespuesta() {
-
         return this.colaEntrada;
+    }
+
+    private void printSocketInfo(Socket s) {
+        escribirConsola("Socket class: " + s.getClass());
+        escribirConsola("   Remote address = " + s.getInetAddress().toString());
+        escribirConsola("   Remote port = " + s.getPort());
+        escribirConsola("   Local socket address = "
+                + s.getLocalSocketAddress().toString());
+        escribirConsola("   Local address = " + s.getLocalAddress().toString());
+        escribirConsola("   Local port = " + s.getLocalPort());
     }
 
     public String leerLineaRespuesta(BufferedReader BufferRespuesta) {
@@ -106,10 +128,43 @@ public class Cliente {
         }
     }
 
-   
     public boolean enviarMensaje(Mensaje mensaje) {
-
-        return true;
+        String resp;
+        try {
+            enviarComando(colaSalida, "MAIL FROM: " + mensaje.getEmisor());
+            resp = leerLineaRespuesta(colaEntrada);
+            if (resp.startsWith("250")) {
+                try {
+                    enviarComando(colaSalida, "RCPT TO: " + mensaje.getReceptor());
+                    resp = leerLineaRespuesta(colaEntrada);
+                    if (resp.startsWith("250")) {
+                        enviarComando(colaSalida, "DATA");
+                        resp = leerLineaRespuesta(colaEntrada);
+                        if (resp.startsWith("354")) {
+                            
+                            return true;
+                        }else{
+                            escribirConsola("Servidor no pudo procesar data del mensaje.");
+                            return false;
+                        }
+                    } else {
+                        escribirConsola("Servidor no pudo procesar receptor. Intentar de nuevo.");
+                        return false;
+                    }
+                } catch (Exception e) {
+                    escribirConsola("Error al enviar receptor");
+                    e.printStackTrace();
+                    return false;
+                }
+            } else {
+                escribirConsola("Servidor no pudo procesar emisor. Intentar de nuevo.");
+                return false;
+            }
+        } catch (IOException ex) {
+            escribirConsola("Error al enviar emisor");
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     public boolean estaConectado() {
@@ -131,6 +186,4 @@ public class Cliente {
     public void setConexion(Conexion cn) {
         this.conexion = cn;
     }
-
-   
 }
