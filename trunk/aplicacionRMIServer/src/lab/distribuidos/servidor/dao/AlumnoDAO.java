@@ -13,9 +13,11 @@ import lab.distribuidos.beans.Alumno;
  */
 public interface AlumnoDAO {
 
+    public String saludo();
+
     public void ingresarAlumno(Alumno alumno);
 
-    public void eliminarAlumno(Alumno alumno);
+    public void eliminarAlumno(int identificador);
 
     public void modificarAlumno(Alumno alumno);
     
