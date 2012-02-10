@@ -27,16 +27,11 @@ public class ConexionBaseDeDatos {
         }
     }
 
-    /**
-     * @return the con
-     */
     public Connection getCon() {
         return con;
     }
 
-    /**
-     * @param con the con to set
-     */
+   
     public void setCon(Connection con) {
         this.con = con;
     }
