@@ -39,7 +39,12 @@ public class AlumnoDAOImpl implements AlumnoDAO {
 
     public void ingresarAlumno(Alumno a) {
         try {
-            statement.execute("INSERT INTO ALUMNO values(" + a.getIdentificador() + ","+ a.getCodigo() + "," + a.getNombres() + "," + a.getaPaterno() + "," + a.getaMaterno() + "," + a.getCorreo() + ");");
+            String comando="INSERT INTO ALUMNO VALUES("+ a.getIdentificador() +
+                            ",'"+ a.getCodigo() + "','" + a.getNombres() +
+                            "','" + a.getaPaterno() + "','" + a.getaMaterno() +
+                            "','" + a.getCorreo() + "');";
+//             System.out.println(comando);
+            statement.execute(comando);
         } catch (SQLException ex) {
             System.out.println("Error al ingresar un alumno");
             ex.printStackTrace();

@@ -17,6 +17,10 @@ public class ServidorImpl implements Servidor {
 
     private AlumnoDAO alumnoDAO;
 
+    public ServidorImpl(AlumnoDAO alumnoDAO) {
+        this.alumnoDAO = alumnoDAO;
+    }
+
     public String saludo() {
         return getAlumnoDAO().saludo();
     }
