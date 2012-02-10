@@ -9,7 +9,7 @@
  * Created on 10-feb-2012, 0:10:00
  */
 
-package lab.distribuidos;
+package lab.distribuidos.presentacion;
 
 /**
  *
