@@ -20,7 +20,7 @@ public class Main {
 
         try {
            // Invocando el "rmi.policy" para permisos. Se le otorga todos los permisos
-            System.setProperty("java.security.policy", "lab.distribuidos.service.impl.policy");
+            System.setProperty("java.security.policy", "rmi.policy");
             // Inicializamos el Security Manager
             System.setSecurityManager(new SecurityManager());
             // Obtenemos una instancia usando el url.
