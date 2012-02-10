@@ -4,6 +4,8 @@
  */
 package lab.distribuidos.servidor.service;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
 import lab.distribuidos.beans.Alumno;
 
@@ -11,15 +13,15 @@ import lab.distribuidos.beans.Alumno;
  *
  * @author Diego
  */
-public interface Servidor {
+public interface Servidor extends Remote{
 
-    public String saludo();
+    public String saludo() throws RemoteException;
 
-    public void ingresarAlumno(Alumno alumno);
+    public void ingresarAlumno(Alumno alumno)throws RemoteException;
 
-    public void eliminarAlumno(int identificador);
+    public void eliminarAlumno(int identificador)throws RemoteException;
 
-    public void modificarAlumno(Alumno alumno);
+    public void modificarAlumno(Alumno alumno)throws RemoteException;
 
-    public List<Alumno> obtenerRecordAcademico();
+    public List<Alumno> obtenerRecordAcademico()throws RemoteException;
 }
