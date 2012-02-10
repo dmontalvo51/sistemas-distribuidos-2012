@@ -9,7 +9,8 @@ package lab.distribuidos.beans;
  * @author A-SOFT03
  */
 public class Alumno {
-    
+
+    private int identificador;
     private String codigo;
     private String nombres;
     private String aPaterno;
@@ -20,14 +21,14 @@ public class Alumno {
         super();
     }
 
-    public Alumno(String codigo, String nombres, String aPaterno, String aMaterno, String correo) {
+    public Alumno(int identificador,String codigo, String nombres, String aPaterno, String aMaterno, String correo) {
+        this.identificador=identificador;
         this.codigo = codigo;
         this.nombres = nombres;
         this.aPaterno = aPaterno;
         this.aMaterno = aMaterno;
         this.correo = correo;
     }
-   
     
     /**
      * @return the codigo
@@ -97,6 +98,20 @@ public class Alumno {
      */
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    /**
+     * @return the identificador
+     */
+    public int getIdentificador() {
+        return identificador;
+    }
+
+    /**
+     * @param identificador the identificador to set
+     */
+    public void setIdentificador(int identificador) {
+        this.identificador = identificador;
     }
     
     
