@@ -31,16 +31,14 @@ public class Main {
         Servidor servidor;
         
         try {
+            System.out.println("Creando Registro RMI ... ");
             Registry registro=LocateRegistry.createRegistry(2320);
             servidor=new ServidorImpl(new AlumnoDAOImpl(con));
             registro.rebind("Servidor",servidor);
-    //        servidor.ingresarAlumno(new Alumno(6,"07200025","Diego", "Montalvo","Molina","dmontalvo@gmail.com"));
-    //        servidor.ingresarAlumno(new Alumno(6,"07200025","Diego", "Montalvo","Molina","dmontalvo@gmail.com"));
-            
             System.out.print("Servidor iniciado correctamente. Esperando llamadas en el puerto 2320");
             
         } catch (RemoteException ex) {
-            System.out.println("Error al crear el registro del servidor");
+            System.out.println("Error al crear Registro RMI en el servidor");
             ex.printStackTrace();
         }
     }
